@@ -2040,6 +2040,490 @@
           <i class="el-icon-close" @click.stop="showTestPanel = false"></i>
         </div>
         <div class="test-panel-content">
+          <!-- 添加PLC变量写入测试部分 -->
+          <div class="test-section">
+            <span class="test-label">PLC变量写入:</span>
+            <div class="plc-test-wrapper">
+              <el-collapse v-model="activePlcGroups" accordion>
+                <!-- 入库缓存区 -->
+                <el-collapse-item title="入库缓存区" name="1">
+                  <div class="compact-grid">
+                    <div class="compact-input-group">
+                      <div class="compact-label">入库1线:</div>
+                      <el-input
+                        v-model="plcWriteValues.inboundLine1"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeInboundLine1"
+                        :loading="plcWriteLoading.inboundLine1"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">入库2线:</div>
+                      <el-input
+                        v-model="plcWriteValues.inboundLine2"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeInboundLine2"
+                        :loading="plcWriteLoading.inboundLine2"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">缓存1#线:</div>
+                      <el-input
+                        v-model="plcWriteValues.bufferLine1"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeBufferLine1"
+                        :loading="plcWriteLoading.bufferLine1"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">缓存2#线:</div>
+                      <el-input
+                        v-model="plcWriteValues.bufferLine2"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeBufferLine2"
+                        :loading="plcWriteLoading.bufferLine2"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">缓存数量:</div>
+                      <el-input
+                        v-model="plcWriteValues.bufferCount"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeBufferCount"
+                        :loading="plcWriteLoading.bufferCount"
+                        >写</el-button
+                      >
+                    </div>
+                  </div>
+                </el-collapse-item>
+
+                <!-- A线 -->
+                <el-collapse-item title="A线" name="2">
+                  <div class="compact-grid">
+                    <div class="compact-input-group">
+                      <div class="compact-label">A1预热1:</div>
+                      <el-input
+                        v-model="plcWriteValues.a1Preheat1"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeA1Preheat1"
+                        :loading="plcWriteLoading.a1Preheat1"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">A1预热2:</div>
+                      <el-input
+                        v-model="plcWriteValues.a1Preheat2"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeA1Preheat2"
+                        :loading="plcWriteLoading.a1Preheat2"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">A2灭菌1:</div>
+                      <el-input
+                        v-model="plcWriteValues.a2Sterile1"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeA2Sterile1"
+                        :loading="plcWriteLoading.a2Sterile1"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">A2灭菌2:</div>
+                      <el-input
+                        v-model="plcWriteValues.a2Sterile2"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeA2Sterile2"
+                        :loading="plcWriteLoading.a2Sterile2"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">A3解析1:</div>
+                      <el-input
+                        v-model="plcWriteValues.a3Analysis1"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeA3Analysis1"
+                        :loading="plcWriteLoading.a3Analysis1"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">A3解析2:</div>
+                      <el-input
+                        v-model="plcWriteValues.a3Analysis2"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeA3Analysis2"
+                        :loading="plcWriteLoading.a3Analysis2"
+                        >写</el-button
+                      >
+                    </div>
+                  </div>
+                </el-collapse-item>
+
+                <!-- B线 -->
+                <el-collapse-item title="B线" name="3">
+                  <div class="compact-grid">
+                    <div class="compact-input-group">
+                      <div class="compact-label">B1预热1:</div>
+                      <el-input
+                        v-model="plcWriteValues.b1Preheat1"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeB1Preheat1"
+                        :loading="plcWriteLoading.b1Preheat1"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">B1预热2:</div>
+                      <el-input
+                        v-model="plcWriteValues.b1Preheat2"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeB1Preheat2"
+                        :loading="plcWriteLoading.b1Preheat2"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">B2灭菌1:</div>
+                      <el-input
+                        v-model="plcWriteValues.b2Sterile1"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeB2Sterile1"
+                        :loading="plcWriteLoading.b2Sterile1"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">B2灭菌2:</div>
+                      <el-input
+                        v-model="plcWriteValues.b2Sterile2"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeB2Sterile2"
+                        :loading="plcWriteLoading.b2Sterile2"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">B3解析1:</div>
+                      <el-input
+                        v-model="plcWriteValues.b3Analysis1"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeB3Analysis1"
+                        :loading="plcWriteLoading.b3Analysis1"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">B3解析2:</div>
+                      <el-input
+                        v-model="plcWriteValues.b3Analysis2"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeB3Analysis2"
+                        :loading="plcWriteLoading.b3Analysis2"
+                        >写</el-button
+                      >
+                    </div>
+                  </div>
+                </el-collapse-item>
+
+                <!-- C线 -->
+                <el-collapse-item title="C线" name="4">
+                  <div class="compact-grid">
+                    <div class="compact-input-group">
+                      <div class="compact-label">C1预热1:</div>
+                      <el-input
+                        v-model="plcWriteValues.c1Preheat1"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeC1Preheat1"
+                        :loading="plcWriteLoading.c1Preheat1"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">C1预热2:</div>
+                      <el-input
+                        v-model="plcWriteValues.c1Preheat2"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeC1Preheat2"
+                        :loading="plcWriteLoading.c1Preheat2"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">C2灭菌1:</div>
+                      <el-input
+                        v-model="plcWriteValues.c2Sterile1"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeC2Sterile1"
+                        :loading="plcWriteLoading.c2Sterile1"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">C2灭菌2:</div>
+                      <el-input
+                        v-model="plcWriteValues.c2Sterile2"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeC2Sterile2"
+                        :loading="plcWriteLoading.c2Sterile2"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">C3解析1:</div>
+                      <el-input
+                        v-model="plcWriteValues.c3Analysis1"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeC3Analysis1"
+                        :loading="plcWriteLoading.c3Analysis1"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">C3解析2:</div>
+                      <el-input
+                        v-model="plcWriteValues.c3Analysis2"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeC3Analysis2"
+                        :loading="plcWriteLoading.c3Analysis2"
+                        >写</el-button
+                      >
+                    </div>
+                  </div>
+                </el-collapse-item>
+
+                <!-- D\E线 -->
+                <el-collapse-item title="D\E线" name="5">
+                  <div class="compact-grid">
+                    <div class="compact-input-group">
+                      <div class="compact-label">D线灭菌进:</div>
+                      <el-input
+                        v-model="plcWriteValues.dSterileIn"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeDSterileIn"
+                        :loading="plcWriteLoading.dSterileIn"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">D线灭菌出:</div>
+                      <el-input
+                        v-model="plcWriteValues.dSterileOut"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeDSterileOut"
+                        :loading="plcWriteLoading.dSterileOut"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">E线灭菌进:</div>
+                      <el-input
+                        v-model="plcWriteValues.eSterileIn"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeESterileIn"
+                        :loading="plcWriteLoading.eSterileIn"
+                        >写</el-button
+                      >
+                    </div>
+                    <div class="compact-input-group">
+                      <div class="compact-label">E线灭菌出:</div>
+                      <el-input
+                        v-model="plcWriteValues.eSterileOut"
+                        size="mini"
+                        class="qrcode-input"
+                        type="number"
+                      ></el-input>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="writeESterileOut"
+                        :loading="plcWriteLoading.eSterileOut"
+                        >写</el-button
+                      >
+                    </div>
+                  </div>
+                </el-collapse-item>
+              </el-collapse>
+            </div>
+          </div>
+
+          <!-- 上货一键放行按钮 -->
+          <div class="test-section">
+            <span class="test-label">上货一键放行:</span>
+            <div class="qrcode-test-container">
+              <el-button
+                type="success"
+                size="small"
+                @click="releaseUpload"
+                :loading="plcWriteLoading.releaseUpload"
+              >
+                上货一键放行
+              </el-button>
+            </div>
+          </div>
           <div class="test-section">
             <span class="test-label">小车位置测试:</span>
             <div class="cart-position-test-container">
@@ -2531,107 +3015,6 @@
               </div>
             </div>
           </div>
-
-          <!-- 添加PLC变量写入测试部分 -->
-          <div class="test-section">
-            <span class="test-label">PLC变量写入测试:</span>
-            <div class="qrcode-test-container">
-              <!-- 入库1线 -->
-              <div class="qrcode-input-group">
-                <div class="send-label">入库1线:</div>
-                <el-input
-                  v-model="plcWriteValues.inboundLine1"
-                  size="small"
-                  placeholder="数值"
-                  class="qrcode-input"
-                  type="number"
-                ></el-input>
-                <el-button
-                  type="primary"
-                  size="small"
-                  @click="writeInboundLine1"
-                  :loading="plcWriteLoading.inboundLine1"
-                >
-                  写入
-                </el-button>
-              </div>
-
-              <!-- 入库2线 -->
-              <div class="qrcode-input-group">
-                <div class="send-label">入库2线:</div>
-                <el-input
-                  v-model="plcWriteValues.inboundLine2"
-                  size="small"
-                  placeholder="数值"
-                  class="qrcode-input"
-                  type="number"
-                ></el-input>
-                <el-button
-                  type="primary"
-                  size="small"
-                  @click="writeInboundLine2"
-                  :loading="plcWriteLoading.inboundLine2"
-                >
-                  写入
-                </el-button>
-              </div>
-
-              <!-- 缓存1#线 -->
-              <div class="qrcode-input-group">
-                <div class="send-label">缓存1#线:</div>
-                <el-input
-                  v-model="plcWriteValues.bufferLine1"
-                  size="small"
-                  placeholder="数值"
-                  class="qrcode-input"
-                  type="number"
-                ></el-input>
-                <el-button
-                  type="primary"
-                  size="small"
-                  @click="writeBufferLine1"
-                  :loading="plcWriteLoading.bufferLine1"
-                >
-                  写入
-                </el-button>
-              </div>
-
-              <!-- 缓存2#线 -->
-              <div class="qrcode-input-group">
-                <div class="send-label">缓存2#线:</div>
-                <el-input
-                  v-model="plcWriteValues.bufferLine2"
-                  size="small"
-                  placeholder="数值"
-                  class="qrcode-input"
-                  type="number"
-                ></el-input>
-                <el-button
-                  type="primary"
-                  size="small"
-                  @click="writeBufferLine2"
-                  :loading="plcWriteLoading.bufferLine2"
-                >
-                  写入
-                </el-button>
-              </div>
-            </div>
-          </div>
-
-          <!-- 上货一键放行按钮 -->
-          <div class="test-section">
-            <span class="test-label">上货一键放行:</span>
-            <div class="qrcode-test-container">
-              <el-button
-                type="success"
-                size="small"
-                @click="releaseUpload"
-                :loading="plcWriteLoading.releaseUpload"
-              >
-                上货一键放行
-              </el-button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -2889,6 +3272,7 @@ export default {
   },
   data() {
     return {
+      activePlcGroups: ['1'],
       nowScanTrayInfo: {},
       isDataReady: false, // 添加数据准备就绪标志位
       showTestPanel: false,
@@ -3812,7 +4196,34 @@ export default {
         inboundLine1: '',
         inboundLine2: '',
         bufferLine1: '',
-        bufferLine2: ''
+        bufferLine2: '',
+        bufferCount: '',
+        // A线
+        a1Preheat1: '',
+        a1Preheat2: '',
+        a2Sterile1: '',
+        a2Sterile2: '',
+        a3Analysis1: '',
+        a3Analysis2: '',
+        // B线
+        b1Preheat1: '',
+        b1Preheat2: '',
+        b2Sterile1: '',
+        b2Sterile2: '',
+        b3Analysis1: '',
+        b3Analysis2: '',
+        // C线
+        c1Preheat1: '',
+        c1Preheat2: '',
+        c2Sterile1: '',
+        c2Sterile2: '',
+        c3Analysis1: '',
+        c3Analysis2: '',
+        // D\E线
+        dSterileIn: '',
+        dSterileOut: '',
+        eSterileIn: '',
+        eSterileOut: ''
       },
       // PLC写入loading状态
       plcWriteLoading: {
@@ -3820,6 +4231,33 @@ export default {
         inboundLine2: false,
         bufferLine1: false,
         bufferLine2: false,
+        bufferCount: false,
+        // A线
+        a1Preheat1: false,
+        a1Preheat2: false,
+        a2Sterile1: false,
+        a2Sterile2: false,
+        a3Analysis1: false,
+        a3Analysis2: false,
+        // B线
+        b1Preheat1: false,
+        b1Preheat2: false,
+        b2Sterile1: false,
+        b2Sterile2: false,
+        b3Analysis1: false,
+        b3Analysis2: false,
+        // C线
+        c1Preheat1: false,
+        c1Preheat2: false,
+        c2Sterile1: false,
+        c2Sterile2: false,
+        c3Analysis1: false,
+        c3Analysis2: false,
+        // D\E线
+        dSterileIn: false,
+        dSterileOut: false,
+        eSterileIn: false,
+        eSterileOut: false,
         releaseUpload: false
       },
       // 添加复选框状态-一楼允许上货
@@ -8290,6 +8728,29 @@ export default {
       }, 2000);
       this.addLog(`写入PLC DBW570（缓存2#线）: ${value}，2秒后恢复`);
     },
+    writeBufferCount() {
+      const value = parseInt(this.plcWriteValues.bufferCount);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      // 设置loading状态
+      this.plcWriteLoading.bufferCount = true;
+      // 再写入目标变量值
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW574', value);
+      // 先写入控制按钮值
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW572_BIT5', true);
+      // 2秒后取消写入
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW574');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW572_BIT5');
+        // 取消loading，清零数值，显示成功提示
+        this.plcWriteLoading.bufferCount = false;
+        this.plcWriteValues.bufferCount = '';
+        this.$message.success('缓存数量写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW574（缓存数量）: ${value}，2秒后恢复`);
+    },
     releaseUpload() {
       // 设置loading状态
       this.plcWriteLoading.releaseUpload = true;
@@ -8303,6 +8764,406 @@ export default {
         this.$message.success('上货一键放行成功');
       }, 2000);
       this.addLog('上货一键放行，写入PLC DBW572_BIT4: true，2秒后恢复');
+    },
+    // A线写入
+    writeA1Preheat1() {
+      const value = parseInt(this.plcWriteValues.a1Preheat1);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.a1Preheat1 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW576', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW588_BIT0', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW576');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW588_BIT0');
+        this.plcWriteLoading.a1Preheat1 = false;
+        this.plcWriteValues.a1Preheat1 = '';
+        this.$message.success('A1预热1线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW576（A1预热1线）: ${value}，2秒后恢复`);
+    },
+    writeA1Preheat2() {
+      const value = parseInt(this.plcWriteValues.a1Preheat2);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.a1Preheat2 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW578', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW588_BIT1', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW578');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW588_BIT1');
+        this.plcWriteLoading.a1Preheat2 = false;
+        this.plcWriteValues.a1Preheat2 = '';
+        this.$message.success('A1预热2线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW578（A1预热2线）: ${value}，2秒后恢复`);
+    },
+    writeA2Sterile1() {
+      const value = parseInt(this.plcWriteValues.a2Sterile1);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.a2Sterile1 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW580', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW588_BIT2', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW580');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW588_BIT2');
+        this.plcWriteLoading.a2Sterile1 = false;
+        this.plcWriteValues.a2Sterile1 = '';
+        this.$message.success('A2灭菌1线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW580（A2灭菌1线）: ${value}，2秒后恢复`);
+    },
+    writeA2Sterile2() {
+      const value = parseInt(this.plcWriteValues.a2Sterile2);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.a2Sterile2 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW582', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW588_BIT3', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW582');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW588_BIT3');
+        this.plcWriteLoading.a2Sterile2 = false;
+        this.plcWriteValues.a2Sterile2 = '';
+        this.$message.success('A2灭菌2线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW582（A2灭菌2线）: ${value}，2秒后恢复`);
+    },
+    writeA3Analysis1() {
+      const value = parseInt(this.plcWriteValues.a3Analysis1);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.a3Analysis1 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW584', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW588_BIT4', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW584');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW588_BIT4');
+        this.plcWriteLoading.a3Analysis1 = false;
+        this.plcWriteValues.a3Analysis1 = '';
+        this.$message.success('A3解析1线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW584（A3解析1线）: ${value}，2秒后恢复`);
+    },
+    writeA3Analysis2() {
+      const value = parseInt(this.plcWriteValues.a3Analysis2);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.a3Analysis2 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW586', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW588_BIT5', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW586');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW588_BIT5');
+        this.plcWriteLoading.a3Analysis2 = false;
+        this.plcWriteValues.a3Analysis2 = '';
+        this.$message.success('A3解析2线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW586（A3解析2线）: ${value}，2秒后恢复`);
+    },
+    // B线写入
+    writeB1Preheat1() {
+      const value = parseInt(this.plcWriteValues.b1Preheat1);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.b1Preheat1 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW590', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW602_BIT0', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW590');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW602_BIT0');
+        this.plcWriteLoading.b1Preheat1 = false;
+        this.plcWriteValues.b1Preheat1 = '';
+        this.$message.success('B1预热1线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW590（B1预热1线）: ${value}，2秒后恢复`);
+    },
+    writeB1Preheat2() {
+      const value = parseInt(this.plcWriteValues.b1Preheat2);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.b1Preheat2 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW592', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW602_BIT1', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW592');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW602_BIT1');
+        this.plcWriteLoading.b1Preheat2 = false;
+        this.plcWriteValues.b1Preheat2 = '';
+        this.$message.success('B1预热2线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW592（B1预热2线）: ${value}，2秒后恢复`);
+    },
+    writeB2Sterile1() {
+      const value = parseInt(this.plcWriteValues.b2Sterile1);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.b2Sterile1 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW594', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW602_BIT2', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW594');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW602_BIT2');
+        this.plcWriteLoading.b2Sterile1 = false;
+        this.plcWriteValues.b2Sterile1 = '';
+        this.$message.success('B2灭菌1线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW594（B2灭菌1线）: ${value}，2秒后恢复`);
+    },
+    writeB2Sterile2() {
+      const value = parseInt(this.plcWriteValues.b2Sterile2);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.b2Sterile2 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW596', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW602_BIT3', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW596');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW602_BIT3');
+        this.plcWriteLoading.b2Sterile2 = false;
+        this.plcWriteValues.b2Sterile2 = '';
+        this.$message.success('B2灭菌2线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW596（B2灭菌2线）: ${value}，2秒后恢复`);
+    },
+    writeB3Analysis1() {
+      const value = parseInt(this.plcWriteValues.b3Analysis1);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.b3Analysis1 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW598', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW602_BIT4', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW598');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW602_BIT4');
+        this.plcWriteLoading.b3Analysis1 = false;
+        this.plcWriteValues.b3Analysis1 = '';
+        this.$message.success('B3解析1线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW598（B3解析1线）: ${value}，2秒后恢复`);
+    },
+    writeB3Analysis2() {
+      const value = parseInt(this.plcWriteValues.b3Analysis2);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.b3Analysis2 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW600', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW602_BIT5', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW600');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW602_BIT5');
+        this.plcWriteLoading.b3Analysis2 = false;
+        this.plcWriteValues.b3Analysis2 = '';
+        this.$message.success('B3解析2线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW600（B3解析2线）: ${value}，2秒后恢复`);
+    },
+    // C线写入
+    writeC1Preheat1() {
+      const value = parseInt(this.plcWriteValues.c1Preheat1);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.c1Preheat1 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW604', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW616_BIT0', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW604');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW616_BIT0');
+        this.plcWriteLoading.c1Preheat1 = false;
+        this.plcWriteValues.c1Preheat1 = '';
+        this.$message.success('C1预热1线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW604（C1预热1线）: ${value}，2秒后恢复`);
+    },
+    writeC1Preheat2() {
+      const value = parseInt(this.plcWriteValues.c1Preheat2);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.c1Preheat2 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW606', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW616_BIT1', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW606');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW616_BIT1');
+        this.plcWriteLoading.c1Preheat2 = false;
+        this.plcWriteValues.c1Preheat2 = '';
+        this.$message.success('C1预热2线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW606（C1预热2线）: ${value}，2秒后恢复`);
+    },
+    writeC2Sterile1() {
+      const value = parseInt(this.plcWriteValues.c2Sterile1);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.c2Sterile1 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW608', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW616_BIT2', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW608');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW616_BIT2');
+        this.plcWriteLoading.c2Sterile1 = false;
+        this.plcWriteValues.c2Sterile1 = '';
+        this.$message.success('C2灭菌1线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW608（C2灭菌1线）: ${value}，2秒后恢复`);
+    },
+    writeC2Sterile2() {
+      const value = parseInt(this.plcWriteValues.c2Sterile2);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.c2Sterile2 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW610', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW616_BIT3', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW610');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW616_BIT3');
+        this.plcWriteLoading.c2Sterile2 = false;
+        this.plcWriteValues.c2Sterile2 = '';
+        this.$message.success('C2灭菌2线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW610（C2灭菌2线）: ${value}，2秒后恢复`);
+    },
+    writeC3Analysis1() {
+      const value = parseInt(this.plcWriteValues.c3Analysis1);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.c3Analysis1 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW612', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW616_BIT4', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW612');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW616_BIT4');
+        this.plcWriteLoading.c3Analysis1 = false;
+        this.plcWriteValues.c3Analysis1 = '';
+        this.$message.success('C3解析1线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW612（C3解析1线）: ${value}，2秒后恢复`);
+    },
+    writeC3Analysis2() {
+      const value = parseInt(this.plcWriteValues.c3Analysis2);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.c3Analysis2 = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW614', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW616_BIT5', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW614');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW616_BIT5');
+        this.plcWriteLoading.c3Analysis2 = false;
+        this.plcWriteValues.c3Analysis2 = '';
+        this.$message.success('C3解析2线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW614（C3解析2线）: ${value}，2秒后恢复`);
+    },
+    // D\E线写入
+    writeDSterileIn() {
+      const value = parseInt(this.plcWriteValues.dSterileIn);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.dSterileIn = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW618', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW626_BIT0', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW618');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW626_BIT0');
+        this.plcWriteLoading.dSterileIn = false;
+        this.plcWriteValues.dSterileIn = '';
+        this.$message.success('D线灭菌进写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW618（D线灭菌进）: ${value}，2秒后恢复`);
+    },
+    writeDSterileOut() {
+      const value = parseInt(this.plcWriteValues.dSterileOut);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.dSterileOut = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW620', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW626_BIT1', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW620');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW626_BIT1');
+        this.plcWriteLoading.dSterileOut = false;
+        this.plcWriteValues.dSterileOut = '';
+        this.$message.success('D线灭菌出写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW620（D线灭菌出）: ${value}，2秒后恢复`);
+    },
+    writeESterileIn() {
+      const value = parseInt(this.plcWriteValues.eSterileIn);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.eSterileIn = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW622', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW626_BIT2', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW622');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW626_BIT2');
+        this.plcWriteLoading.eSterileIn = false;
+        this.plcWriteValues.eSterileIn = '';
+        this.$message.success('E线灭菌进写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW622（E线灭菌进）: ${value}，2秒后恢复`);
+    },
+    writeESterileOut() {
+      const value = parseInt(this.plcWriteValues.eSterileOut);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      this.plcWriteLoading.eSterileOut = true;
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW624', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW626_BIT3', true);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DBW624');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW626_BIT3');
+        this.plcWriteLoading.eSterileOut = false;
+        this.plcWriteValues.eSterileOut = '';
+        this.$message.success('E线灭菌出写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DBW624（E线灭菌出）: ${value}，2秒后恢复`);
     },
     // 移除旧的D/E数量调节函数，D/E数量由PLC提供
     // 设置托盘顺序编号的方法
@@ -10537,6 +11398,72 @@ export default {
   background: rgba(10, 197, 168, 0.3);
   border-color: rgba(10, 197, 168, 0.5);
   color: #fff;
+}
+
+/* PLC 变量写入测试分组样式 */
+.plc-test-wrapper :deep(.el-collapse) {
+  border: none;
+  background: transparent;
+}
+
+.plc-test-wrapper :deep(.el-collapse-item__header) {
+  background: rgba(10, 197, 168, 0.1);
+  color: #0ac5a8;
+  border: none;
+  padding: 0 10px;
+  height: 32px;
+  line-height: 32px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.plc-test-wrapper :deep(.el-collapse-item__header.is-active) {
+  background: rgba(10, 197, 168, 0.2);
+}
+
+.plc-test-wrapper :deep(.el-collapse-item__wrap) {
+  background: transparent;
+  border: none;
+}
+
+.plc-test-wrapper :deep(.el-collapse-item__content) {
+  padding: 8px 4px;
+  color: #fff;
+}
+
+.compact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.compact-input-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.compact-label {
+  width: 70px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.plc-test-wrapper :deep(.el-input--mini .el-input__inner) {
+  height: 24px;
+  line-height: 24px;
+  padding: 0 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(10, 197, 168, 0.3);
+  color: #fff;
+}
+
+.plc-test-wrapper :deep(.el-button--mini) {
+  padding: 4px 8px;
+  min-width: 32px;
 }
 
 /* 添加队列移动相关样式 */
