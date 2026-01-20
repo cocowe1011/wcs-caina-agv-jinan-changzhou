@@ -5081,8 +5081,42 @@ export default {
                 state: '1'
               });
             } else {
-              // 报错
-              this.addLog('错误：分发区中未处理过的第一个托盘数据不存在');
+              if (this.noCodeUpload) {
+                // 无码模式：自动添加无码托盘并发送去预热房命令
+                const trayInfo = {
+                  trayCode: 'no-tray-code',
+                  trayTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+                  orderId: 'NO-ORDER',
+                  productCode: 'NO-PRODUCT',
+                  productName: '无码产品',
+                  isTerile: 1, // 灭菌托盘
+                  state: '1', // 已处理
+                  sendTo: '',
+                  // 预热间信息
+                  preheatingRoom: '',
+                  inPreheatingRoomTime: null,
+                  outPreheatingRoomTime: null,
+                  // 灭菌间信息
+                  sterilizationRoom: '',
+                  inSterilizationRoomTime: null,
+                  outSterilizationRoomTime: null,
+                  // 解析间信息
+                  analysisRoom: '',
+                  inAnalysisRoomTime: null,
+                  outAnalysisRoomTime: null
+                };
+                this.queues[1].trayInfo.push(trayInfo);
+                this.addLog('无码模式：分发区自动补托盘并发送去预热房命令');
+
+                // 给PLC发送去预热房的命令
+                ipcRenderer.send('writeSingleValueToPLC', 'DBW542', 2);
+                setTimeout(() => {
+                  ipcRenderer.send('cancelWriteToPLC', 'DBW542');
+                }, 2000);
+              } else {
+                // 报错
+                this.addLog('错误：分发区中未处理过的第一个托盘数据不存在');
+              }
             }
           }
         }
