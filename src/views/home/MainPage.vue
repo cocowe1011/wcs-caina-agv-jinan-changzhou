@@ -3275,6 +3275,7 @@ export default {
       activePlcGroups: ['1'],
       nowScanTrayInfo: {},
       isDataReady: false, // 添加数据准备就绪标志位
+      preheatingCommandTimer: null,
       showTestPanel: false,
       orderQueryDialogVisible: false,
       buttonStates: {
@@ -5020,6 +5021,11 @@ export default {
         // 当信号从1变为0时，执行队列移动逻辑
         if (oldVal === 1 && newVal === 0) {
           this.addLog('请求上位机下发任务信号由1变0，开始执行队列移动');
+          if (this.preheatingCommandTimer) {
+            this.addLog('请求上位机下发任务信号由1变0，取消去预热房命令定时器');
+            clearInterval(this.preheatingCommandTimer);
+            this.preheatingCommandTimer = null;
+          }
           // 执行缓冲区队列移动逻辑：把分发区的符合条件的托盘移动到缓冲区
           if (this.queues[1]?.trayInfo && this.queues[1].trayInfo.length > 0) {
             // 查找state为1，并且isTerile为1的第一个托盘，加入到缓冲区队列
@@ -5070,11 +5076,23 @@ export default {
                 this.addLog(
                   `判断到灭菌托盘：${targetTray.trayCode}，发送去预热房命令`
                 );
-                // 给PLC发送去预热房的命令
+                // 给PLC发送去预热房的命令，并开启3秒重发定时器
+                if (this.preheatingCommandTimer) {
+                  this.addLog('取消去预热房命令定时器');
+                  clearInterval(this.preheatingCommandTimer);
+                  this.preheatingCommandTimer = null;
+                }
                 ipcRenderer.send('writeSingleValueToPLC', 'DBW542', 2);
                 setTimeout(() => {
                   ipcRenderer.send('cancelWriteToPLC', 'DBW542');
                 }, 2000);
+                this.preheatingCommandTimer = setInterval(() => {
+                  this.addLog('重发：发送去预热房命令 (DBW542 = 2)');
+                  ipcRenderer.send('writeSingleValueToPLC', 'DBW542', 2);
+                  setTimeout(() => {
+                    ipcRenderer.send('cancelWriteToPLC', 'DBW542');
+                  }, 2000);
+                }, 3000);
               }
               this.$set(this.queues[1].trayInfo, targetIndex, {
                 ...targetTray,
@@ -5108,11 +5126,27 @@ export default {
                 this.queues[1].trayInfo.push(trayInfo);
                 this.addLog('无码模式：分发区自动补托盘并发送去预热房命令');
 
-                // 给PLC发送去预热房的命令
+                // 给PLC发送去预热房的命令，并开启3秒重发定时器
+                if (this.preheatingCommandTimer) {
+                  this.addLog(
+                    '分发区自动补托盘并发送去预热房命令，取消去预热房命令定时器'
+                  );
+                  clearInterval(this.preheatingCommandTimer);
+                  this.preheatingCommandTimer = null;
+                }
                 ipcRenderer.send('writeSingleValueToPLC', 'DBW542', 2);
                 setTimeout(() => {
                   ipcRenderer.send('cancelWriteToPLC', 'DBW542');
                 }, 2000);
+                this.preheatingCommandTimer = setInterval(() => {
+                  this.addLog(
+                    '分发区自动补托盘并发送去预热房命令，重发：发送去预热房命令 (DBW542 = 2)'
+                  );
+                  ipcRenderer.send('writeSingleValueToPLC', 'DBW542', 2);
+                  setTimeout(() => {
+                    ipcRenderer.send('cancelWriteToPLC', 'DBW542');
+                  }, 2000);
+                }, 3000);
               } else {
                 // 报错
                 this.addLog('错误：分发区中未处理过的第一个托盘数据不存在');
