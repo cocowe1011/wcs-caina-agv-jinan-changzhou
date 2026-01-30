@@ -181,7 +181,10 @@
                 <div
                   v-for="marker in queueMarkers.filter((m) => m.id !== 15)"
                   :key="marker.id"
-                  class="queue-marker"
+                  :class="[
+                    'queue-marker',
+                    { mismatch: isQuantityMismatch(marker.id) }
+                  ]"
                   :data-x="marker.x"
                   :data-y="marker.y"
                   @click="handleQueueMarkerClick(marker.queueId)"
@@ -448,7 +451,7 @@
                       <el-button
                         type="primary"
                         size="mini"
-                        @click="sendToPreheatingRoom"
+                        @click="handlePreheatingRoomClick"
                         :loading="preheatingRoomLoading"
                         style="width: 100%"
                         >执行</el-button
@@ -8449,6 +8452,53 @@ export default {
       if (room === 'C') return Number(this.cLineQuantity.c3) || 0;
       return 0;
     },
+    isQuantityMismatch(markerId) {
+      if (!this.queues) return false;
+
+      const marker = this.queueMarkers.find((m) => m.id === markerId);
+      if (!marker) return false;
+
+      const systemCount =
+        this.queues.find((q) => q.id === marker.queueId)?.trayInfo?.length || 0;
+      let plcCount = 0;
+
+      switch (markerId) {
+        case 3:
+          plcCount = this.bufferQuantity;
+          break;
+        case 4:
+          plcCount = this.aLineQuantity.a1;
+          break;
+        case 5:
+          plcCount = this.bLineQuantity.b1;
+          break;
+        case 6:
+          plcCount = this.cLineQuantity.c1;
+          break;
+        case 7:
+          plcCount = this.aLineQuantity.a2;
+          break;
+        case 8:
+          plcCount = this.bLineQuantity.b2;
+          break;
+        case 9:
+          plcCount = this.cLineQuantity.c2;
+          break;
+        case 10:
+          plcCount = this.aLineQuantity.a3;
+          break;
+        case 11:
+          plcCount = this.bLineQuantity.b3;
+          break;
+        case 12:
+          plcCount = this.cLineQuantity.c3;
+          break;
+        default:
+          return false;
+      }
+
+      return systemCount !== Number(plcCount);
+    },
     // 检查目的地是否已满16个托盘，满了则自动设置为不执行
     checkDestinationLimit() {
       // 检查预热房（A1, B1, C1）是否满16个
@@ -9253,6 +9303,55 @@ export default {
       this.$set(tray, 'sequenceNumber', Math.ceil((existingTrayCount + 1) / 2));
     },
     // 发送到预热房的方法
+    handlePreheatingRoomClick() {
+      if (!this.preheatingRoomSelected) {
+        this.$message.warning('请先选择预热房');
+        return;
+      }
+
+      // 1. 获取缓冲区数量
+      const systemBufferCount =
+        this.queues[2] && Array.isArray(this.queues[2].trayInfo)
+          ? this.queues[2].trayInfo.length
+          : 0;
+      const plcBufferCount = this.bufferQuantity || 0;
+
+      // 2. 获取目标预热房数量 (A1: index 3, B1: index 4, C1: index 5)
+      const roomToIndex = { A: 3, B: 4, C: 5 };
+      const targetIndex = roomToIndex[this.preheatingRoomSelected];
+      const systemTargetCount =
+        this.queues[targetIndex] &&
+        Array.isArray(this.queues[targetIndex].trayInfo)
+          ? this.queues[targetIndex].trayInfo.length
+          : 0;
+      const plcTargetCount = this.getPreheatCountFor(
+        this.preheatingRoomSelected
+      );
+
+      // 输出详细日志
+      this.addLog(
+        `[手动执行预热房] 缓冲区：系统(${systemBufferCount}) PLC(${plcBufferCount}) | 预热房${this.preheatingRoomSelected}：系统(${systemTargetCount}) PLC(${plcTargetCount})`
+      );
+
+      // 校验：系统缓存区数量与PLC数量必须一致
+      if (systemBufferCount !== plcBufferCount) {
+        const msg = `缓冲区数量不一致：系统缓存区有 ${systemBufferCount} 个托盘，PLC 显示有 ${plcBufferCount} 个托盘，请检查一致后再执行！`;
+        this.$message.warning(msg);
+        this.addLog(msg);
+        return;
+      }
+
+      // 校验：目标预热房数量与PLC数量必须一致
+      if (systemTargetCount !== plcTargetCount) {
+        const msg = `预热房数量不一致：系统${this.preheatingRoomSelected}预热房有 ${systemTargetCount} 个托盘，PLC 显示有 ${plcTargetCount} 个托盘，请检查一致后再执行！`;
+        this.$message.warning(msg);
+        this.addLog(msg);
+        return;
+      }
+
+      // 校验通过，执行原有的逻辑
+      this.sendToPreheatingRoom();
+    },
     sendToPreheatingRoom() {
       if (!this.preheatingRoomSelected) {
         this.$message.warning('请先选择预热房');
@@ -9347,7 +9446,13 @@ export default {
             if (tray && typeof tray === 'object' && tray.sendTo === '') {
               tray.sendTo = targetSendTo;
               trayFoundAndUpdated = true;
-              this.addLog(`托盘 ${tray.trayCode} 将发送到 ${targetSendTo}`);
+              const systemQueueCount =
+                this.queues[2] && Array.isArray(this.queues[2].trayInfo)
+                  ? this.queues[2].trayInfo.length
+                  : 0;
+              this.addLog(
+                `托盘 ${tray.trayCode} 将发送到 ${targetSendTo}，当前缓冲区系统数量：${systemQueueCount}，PLC数量：${this.bufferQuantity}`
+              );
               this.preWarmTrayCode = tray.trayCode;
               this.sendPreheatingToPLC(targetSendTo);
               break; // 找到并更新后退出循环
@@ -9512,9 +9617,20 @@ export default {
           ipcRenderer.send('cancelWriteToPLC', 'DBW528');
         }, 2000);
       }
+      // 获取目的地系统数量
+      const targetRoomToIndex = { A: 6, B: 7, C: 8 };
+      const targetQueueIndex =
+        targetRoomToIndex[this.disinfectionRoomSelectedTo];
+      const systemTargetCount =
+        this.queues[targetQueueIndex] &&
+        Array.isArray(this.queues[targetQueueIndex].trayInfo)
+          ? this.queues[targetQueueIndex].trayInfo.length
+          : 0;
+      const plcTargetCount = destinationQueueCount;
+
       this.updateDisinfectionNeedAndWrite();
       this.addLog(
-        `执行发送从${this.disinfectionRoomSelectedFrom}预热房到${this.disinfectionRoomSelectedTo}灭菌房操作`
+        `执行发送从${this.disinfectionRoomSelectedFrom}预热房到${this.disinfectionRoomSelectedTo}灭菌房操作，起始地：系统(${systemQueueCount}) PLC(${plcPreheatCount}) | 目的地：系统(${systemTargetCount}) PLC(${plcTargetCount})`
       );
       this.$message.success(
         `已发送从${this.disinfectionRoomSelectedFrom}预热房到${this.disinfectionRoomSelectedTo}灭菌房`
@@ -9603,8 +9719,18 @@ export default {
           ipcRenderer.send('cancelWriteToPLC', 'DBW532');
         }, 2000);
       }
+      // 获取目的地系统数量
+      const targetRoomToIndex = { A: 9, B: 10, C: 11 };
+      const targetQueueIndex = targetRoomToIndex[this.warehouseSelectedTo];
+      const systemTargetCount =
+        this.queues[targetQueueIndex] &&
+        Array.isArray(this.queues[targetQueueIndex].trayInfo)
+          ? this.queues[targetQueueIndex].trayInfo.length
+          : 0;
+      const plcTargetCount = destinationQueueCount;
+
       this.addLog(
-        `执行发送从灭菌柜${this.warehouseSelectedFrom}出库到解析库${this.warehouseSelectedTo}入库操作`
+        `执行发送从灭菌柜${this.warehouseSelectedFrom}出库到解析库${this.warehouseSelectedTo}入库操作，起始地：系统(${systemQueueCount}) PLC(${plcDisinfectionCount}) | 目的地：系统(${systemTargetCount}) PLC(${plcTargetCount})`
       );
       this.$message.success(
         `已发送从灭菌柜${this.warehouseSelectedFrom}出库到解析库${this.warehouseSelectedTo}入库`
@@ -9696,7 +9822,9 @@ export default {
           ipcRenderer.send('cancelWriteToPLC', 'DBW536');
         }, 2000);
       }
-      this.addLog(`${this.outWarehouseSelected}执行发送出库操作`);
+      this.addLog(
+        `${this.outWarehouseSelected}执行发送出库操作，当前系统数量：${systemQueueCount}，PLC数量：${plcWarehouseCount}`
+      );
     },
     // 显示小车选择按钮
     showCarSelect() {
@@ -10755,6 +10883,15 @@ export default {
                     font-size: 14px;
                     font-weight: bold;
                     color: #409eff;
+                  }
+                }
+
+                &.mismatch {
+                  background: rgba(255, 0, 0, 0.8) !important;
+                  border: 2px solid #ff4d4f !important;
+                  .queue-marker-count,
+                  .queue-marker-name {
+                    color: #ffffff !important;
                   }
                 }
               }
