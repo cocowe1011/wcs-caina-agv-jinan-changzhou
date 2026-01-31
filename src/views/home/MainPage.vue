@@ -181,10 +181,7 @@
                 <div
                   v-for="marker in queueMarkers.filter((m) => m.id !== 15)"
                   :key="marker.id"
-                  :class="[
-                    'queue-marker',
-                    { mismatch: isQuantityMismatch(marker.id) }
-                  ]"
+                  class="queue-marker"
                   :data-x="marker.x"
                   :data-y="marker.y"
                   @click="handleQueueMarkerClick(marker.queueId)"
@@ -8452,53 +8449,6 @@ export default {
       if (room === 'C') return Number(this.cLineQuantity.c3) || 0;
       return 0;
     },
-    isQuantityMismatch(markerId) {
-      if (!this.queues) return false;
-
-      const marker = this.queueMarkers.find((m) => m.id === markerId);
-      if (!marker) return false;
-
-      const systemCount =
-        this.queues.find((q) => q.id === marker.queueId)?.trayInfo?.length || 0;
-      let plcCount = 0;
-
-      switch (markerId) {
-        case 3:
-          plcCount = this.bufferQuantity;
-          break;
-        case 4:
-          plcCount = this.aLineQuantity.a1;
-          break;
-        case 5:
-          plcCount = this.bLineQuantity.b1;
-          break;
-        case 6:
-          plcCount = this.cLineQuantity.c1;
-          break;
-        case 7:
-          plcCount = this.aLineQuantity.a2;
-          break;
-        case 8:
-          plcCount = this.bLineQuantity.b2;
-          break;
-        case 9:
-          plcCount = this.cLineQuantity.c2;
-          break;
-        case 10:
-          plcCount = this.aLineQuantity.a3;
-          break;
-        case 11:
-          plcCount = this.bLineQuantity.b3;
-          break;
-        case 12:
-          plcCount = this.cLineQuantity.c3;
-          break;
-        default:
-          return false;
-      }
-
-      return systemCount !== Number(plcCount);
-    },
     // 检查目的地是否已满16个托盘，满了则自动设置为不执行
     checkDestinationLimit() {
       // 检查预热房（A1, B1, C1）是否满16个
@@ -9332,22 +9282,6 @@ export default {
       this.addLog(
         `[手动执行预热房] 缓冲区：系统(${systemBufferCount}) PLC(${plcBufferCount}) | 预热房${this.preheatingRoomSelected}：系统(${systemTargetCount}) PLC(${plcTargetCount})`
       );
-
-      // 校验：系统缓存区数量与PLC数量必须一致
-      if (systemBufferCount !== plcBufferCount) {
-        const msg = `缓冲区数量不一致：系统缓存区有 ${systemBufferCount} 个托盘，PLC 显示有 ${plcBufferCount} 个托盘，请检查一致后再执行！`;
-        this.$message.warning(msg);
-        this.addLog(msg);
-        return;
-      }
-
-      // 校验：目标预热房数量与PLC数量必须一致
-      if (systemTargetCount !== plcTargetCount) {
-        const msg = `预热房数量不一致：系统${this.preheatingRoomSelected}预热房有 ${systemTargetCount} 个托盘，PLC 显示有 ${plcTargetCount} 个托盘，请检查一致后再执行！`;
-        this.$message.warning(msg);
-        this.addLog(msg);
-        return;
-      }
 
       // 校验通过，执行原有的逻辑
       this.sendToPreheatingRoom();
@@ -10883,15 +10817,6 @@ export default {
                     font-size: 14px;
                     font-weight: bold;
                     color: #409eff;
-                  }
-                }
-
-                &.mismatch {
-                  background: rgba(255, 0, 0, 0.8) !important;
-                  border: 2px solid #ff4d4f !important;
-                  .queue-marker-count,
-                  .queue-marker-name {
-                    color: #ffffff !important;
                   }
                 }
               }
