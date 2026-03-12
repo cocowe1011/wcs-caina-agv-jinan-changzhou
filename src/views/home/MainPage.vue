@@ -7012,19 +7012,17 @@ export default {
             trayCode === '' ||
             trayCode.toLowerCase().includes('read')
           ) {
-            this.addLog(
-              '一楼缓存区扫码失败：条码信息为NoRead,给PLC发送缓存区判断扫码失败去异常口'
-            );
+            this.addLog('一楼缓存区扫码失败：条码信息为NoRead,禁止通行');
             // 给PLC发送缓存区判断扫码失败去异常口
-            ipcRenderer.send('writeSingleValueToPLC', 'DBW544_BIT13', true);
-            setTimeout(() => {
-              ipcRenderer.send('cancelWriteToPLC', 'DBW544_BIT13');
-            }, 2000);
-            // 给PLC发送通行信号-使用备用地址-异常03
-            ipcRenderer.send('writeSingleValueToPLC', 'DBW556', 3);
-            setTimeout(() => {
-              ipcRenderer.send('cancelWriteToPLC', 'DBW556');
-            }, 2000);
+            // ipcRenderer.send('writeSingleValueToPLC', 'DBW544_BIT13', true);
+            // setTimeout(() => {
+            //   ipcRenderer.send('cancelWriteToPLC', 'DBW544_BIT13');
+            // }, 2000);
+            // // 给PLC发送通行信号-使用备用地址-异常03
+            // ipcRenderer.send('writeSingleValueToPLC', 'DBW556', 3);
+            // setTimeout(() => {
+            //   ipcRenderer.send('cancelWriteToPLC', 'DBW556');
+            // }, 2000);
             return;
           }
           // 正常模式下检查第一个托盘的托盘号是否与入参匹配
@@ -7048,34 +7046,34 @@ export default {
             );
           } else {
             this.addLog(
-              `托盘号不匹配，读码：${trayCode}，队列第一个托盘：${this.queues[0].trayInfo[0].trayCode}，给PLC发送缓存区判断扫码失败去异常口`
+              `托盘号不匹配，读码：${trayCode}，队列第一个托盘：${this.queues[0].trayInfo[0].trayCode}，禁止通行`
             );
             // 给PLC发送缓存区判断扫码失败去异常口
-            ipcRenderer.send('writeSingleValueToPLC', 'DBW544_BIT13', true);
-            setTimeout(() => {
-              ipcRenderer.send('cancelWriteToPLC', 'DBW544_BIT13');
-            }, 2000);
-            // 给PLC发送通行信号-使用备用地址-异常03
-            ipcRenderer.send('writeSingleValueToPLC', 'DBW556', 3);
-            setTimeout(() => {
-              ipcRenderer.send('cancelWriteToPLC', 'DBW556');
-            }, 2000);
+            // ipcRenderer.send('writeSingleValueToPLC', 'DBW544_BIT13', true);
+            // setTimeout(() => {
+            //   ipcRenderer.send('cancelWriteToPLC', 'DBW544_BIT13');
+            // }, 2000);
+            // // 给PLC发送通行信号-使用备用地址-异常03
+            // ipcRenderer.send('writeSingleValueToPLC', 'DBW556', 3);
+            // setTimeout(() => {
+            //   ipcRenderer.send('cancelWriteToPLC', 'DBW556');
+            // }, 2000);
           }
         }
       } else {
         this.addLog(
-          '一楼缓存区扫码失败：上货区队列为空，无法执行出库操作,给PLC发送缓存区判断扫码失败去异常口'
+          '一楼缓存区扫码失败：上货区队列为空，无法执行出库操作,禁止通行'
         );
         // 给PLC发送缓存区判断扫码失败去异常口
-        ipcRenderer.send('writeSingleValueToPLC', 'DBW544_BIT13', true);
-        setTimeout(() => {
-          ipcRenderer.send('cancelWriteToPLC', 'DBW544_BIT13');
-        }, 2000);
-        // 给PLC发送通行信号-使用备用地址-异常03
-        ipcRenderer.send('writeSingleValueToPLC', 'DBW556', 3);
-        setTimeout(() => {
-          ipcRenderer.send('cancelWriteToPLC', 'DBW556');
-        }, 2000);
+        // ipcRenderer.send('writeSingleValueToPLC', 'DBW544_BIT13', true);
+        // setTimeout(() => {
+        //   ipcRenderer.send('cancelWriteToPLC', 'DBW544_BIT13');
+        // }, 2000);
+        // // 给PLC发送通行信号-使用备用地址-异常03
+        // ipcRenderer.send('writeSingleValueToPLC', 'DBW556', 3);
+        // setTimeout(() => {
+        //   ipcRenderer.send('cancelWriteToPLC', 'DBW556');
+        // }, 2000);
       }
     },
     // 添加货物到上货区队列
