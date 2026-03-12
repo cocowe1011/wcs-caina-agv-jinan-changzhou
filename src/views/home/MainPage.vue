@@ -7013,6 +7013,10 @@ export default {
             trayCode.toLowerCase().includes('read')
           ) {
             this.addLog('一楼缓存区扫码失败：条码信息为NoRead,禁止通行');
+            this.addLog(
+              '一楼缓存区扫码失败：条码信息为NoRead,禁止通行',
+              'alarm'
+            );
             // 给PLC发送缓存区判断扫码失败去异常口
             // ipcRenderer.send('writeSingleValueToPLC', 'DBW544_BIT13', true);
             // setTimeout(() => {
@@ -7048,6 +7052,10 @@ export default {
             this.addLog(
               `托盘号不匹配，读码：${trayCode}，队列第一个托盘：${this.queues[0].trayInfo[0].trayCode}，禁止通行`
             );
+            this.addLog(
+              `托盘号不匹配，读码：${trayCode}，队列第一个托盘：${this.queues[0].trayInfo[0].trayCode}，禁止通行`,
+              'alarm'
+            );
             // 给PLC发送缓存区判断扫码失败去异常口
             // ipcRenderer.send('writeSingleValueToPLC', 'DBW544_BIT13', true);
             // setTimeout(() => {
@@ -7063,6 +7071,10 @@ export default {
       } else {
         this.addLog(
           '一楼缓存区扫码失败：上货区队列为空，无法执行出库操作,禁止通行'
+        );
+        this.addLog(
+          '一楼缓存区扫码失败：上货区队列为空，无法执行出库操作,禁止通行',
+          'alarm'
         );
         // 给PLC发送缓存区判断扫码失败去异常口
         // ipcRenderer.send('writeSingleValueToPLC', 'DBW544_BIT13', true);
