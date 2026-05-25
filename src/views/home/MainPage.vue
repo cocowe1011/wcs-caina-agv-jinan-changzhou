@@ -7874,9 +7874,6 @@ export default {
         });
       });
     },
-    beforeDestroy() {
-      window.removeEventListener('resize', this.updateMarkerPositions);
-    },
     // 根据PLC数值更新小车位置
     updateCartPositionByValue(cartId, value) {
       const cart = this.carts.find((c) => c.id === cartId);
@@ -10012,6 +10009,9 @@ export default {
         log.unread = false;
       });
     }
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateMarkerPositions);
   }
 };
 </script>
